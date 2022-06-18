@@ -6,6 +6,9 @@ require("dotenv").config();
 //create the express server
 const app = express();
 
+var favicon = require("serve-favicon");
+app.use(favicon(__dirname + "/outputDir/favicon.ico"));
+
 //server port number
 const PORT = process.env.PORT || 3000;
 
