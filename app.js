@@ -3,6 +3,9 @@ const express = require("express");
 const fetch = require("node-fetch");
 require("dotenv").config();
 
+//counter for daily limit
+var counter = 50;
+
 //create the express server
 const app = express();
 
@@ -28,10 +31,21 @@ app.get("/", (req, res) => {
 });
 app.post("/convert-mp3", async (req, res) => {
   const videoID = req.body.videoID;
-  if (videoID === undefined || videoID === "" || videoID === null) {
+
+  //cutting full url to id
+  var id = "";
+  if (videoID.includes("https://www.youtube.com/watch?v=")) {
+    var id = videoID.replace("https://www.youtube.com/watch?v=", "");
+  } else if (videoID.includes("https://youtu.be/")) {
+    var id = videoID.replace("https://youtu.be/", "");
+  } else if (videoID.includes("https://m.youtube.com/watch?v=")) {
+    var id = videoID.replace("https://m.youtube.com/watch?v=", "");
+  }
+
+  if (id === undefined || id === "" || id === null) {
     return res.render("index", { success: false, message: "Please enter a video ID" });
   } else {
-    const fetchAPI = await fetch(`https://youtube-mp36.p.rapidapi.com/dl?id=${videoID}`, {
+    const fetchAPI = await fetch(`https://youtube-mp36.p.rapidapi.com/dl?id=${id}`, {
       method: "GET",
       headers: {
         "x-rapidapi-key": process.env.API_KEY,
